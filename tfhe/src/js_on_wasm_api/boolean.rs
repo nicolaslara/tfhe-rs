@@ -3,6 +3,7 @@ use wasm_bindgen::prelude::*;
 
 use super::js_wasm_seeder;
 
+#[cfg(feature = "console_error_panic_hook")]
 use std::panic::set_hook;
 
 #[wasm_bindgen]
@@ -51,6 +52,7 @@ impl TryFrom<u32> for BooleanParameterSet {
 impl Boolean {
     #[wasm_bindgen]
     pub fn get_parameters(parameter_choice: u32) -> Result<BooleanParameters, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         let parameter_choice = BooleanParameterSet::try_from(parameter_choice)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))?;
@@ -75,6 +77,7 @@ impl Boolean {
         ks_base_log: usize,
         ks_level: usize,
     ) -> BooleanParameters {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         use crate::core_crypto::prelude::*;
         BooleanParameters(crate::boolean::parameters::BooleanParameters {
@@ -96,6 +99,7 @@ impl Boolean {
         seed_low_bytes: u64,
         parameters: &BooleanParameters,
     ) -> BooleanClientKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         let seed_high_bytes: u128 = seed_high_bytes.into();
         let seed_low_bytes: u128 = seed_low_bytes.into();
@@ -113,12 +117,14 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn new_client_key(parameters: &BooleanParameters) -> BooleanClientKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         BooleanClientKey(crate::boolean::client_key::ClientKey::new(&parameters.0))
     }
 
     #[wasm_bindgen]
     pub fn new_public_key(client_key: &BooleanClientKey) -> BooleanPublicKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         BooleanPublicKey(crate::boolean::public_key::PublicKey::new(&client_key.0))
@@ -126,6 +132,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn new_compressed_server_key(client_key: &BooleanClientKey) -> BooleanCompressedServerKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         BooleanCompressedServerKey(crate::boolean::server_key::CompressedServerKey::new(
@@ -135,6 +142,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn encrypt(client_key: &BooleanClientKey, message: bool) -> BooleanCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         BooleanCiphertext(client_key.0.encrypt(message))
     }
@@ -144,6 +152,7 @@ impl Boolean {
         client_key: &BooleanClientKey,
         message: bool,
     ) -> BooleanCompressedCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         BooleanCompressedCiphertext(client_key.0.encrypt_compressed(message))
     }
@@ -152,6 +161,7 @@ impl Boolean {
     pub fn decompress_ciphertext(
         compressed_ciphertext: &BooleanCompressedCiphertext,
     ) -> BooleanCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         BooleanCiphertext(compressed_ciphertext.0.clone().into())
     }
@@ -161,6 +171,7 @@ impl Boolean {
         public_key: &BooleanPublicKey,
         message: bool,
     ) -> BooleanCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         BooleanCiphertext(public_key.0.encrypt(message))
@@ -168,18 +179,21 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn trivial_encrypt(&mut self, message: bool) -> BooleanCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         BooleanCiphertext(crate::boolean::ciphertext::Ciphertext::Trivial(message))
     }
 
     #[wasm_bindgen]
     pub fn decrypt(client_key: &BooleanClientKey, ct: &BooleanCiphertext) -> bool {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         client_key.0.decrypt(&ct.0)
     }
 
     #[wasm_bindgen]
     pub fn serialize_ciphertext(ciphertext: &BooleanCiphertext) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&ciphertext.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -187,6 +201,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn deserialize_ciphertext(buffer: &[u8]) -> Result<BooleanCiphertext, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -197,6 +212,7 @@ impl Boolean {
     pub fn serialize_compressed_ciphertext(
         ciphertext: &BooleanCompressedCiphertext,
     ) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&ciphertext.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -206,6 +222,7 @@ impl Boolean {
     pub fn deserialize_compressed_ciphertext(
         buffer: &[u8],
     ) -> Result<BooleanCompressedCiphertext, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -214,6 +231,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn serialize_client_key(client_key: &BooleanClientKey) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&client_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -221,6 +239,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn deserialize_client_key(buffer: &[u8]) -> Result<BooleanClientKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -229,6 +248,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn serialize_public_key(public_key: &BooleanPublicKey) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&public_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -236,6 +256,7 @@ impl Boolean {
 
     #[wasm_bindgen]
     pub fn deserialize_public_key(buffer: &[u8]) -> Result<BooleanPublicKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -246,6 +267,7 @@ impl Boolean {
     pub fn serialize_compressed_server_key(
         server_key: &BooleanCompressedServerKey,
     ) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&server_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -255,6 +277,7 @@ impl Boolean {
     pub fn deserialize_compressed_server_key(
         buffer: &[u8],
     ) -> Result<BooleanCompressedServerKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))

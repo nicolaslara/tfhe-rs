@@ -3,6 +3,7 @@ use wasm_bindgen::prelude::*;
 
 use super::js_wasm_seeder;
 
+#[cfg(feature = "console_error_panic_hook")]
 use std::panic::set_hook;
 
 #[wasm_bindgen]
@@ -38,6 +39,7 @@ impl Shortint {
         message_bits: usize,
         carry_bits: usize,
     ) -> Result<ShortintParameters, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         match (message_bits, carry_bits) {
             (1, 0) => Ok(crate::shortint::parameters::PARAM_MESSAGE_1_CARRY_0),
@@ -106,6 +108,7 @@ impl Shortint {
         message_modulus: usize,
         carry_modulus: usize,
     ) -> ShortintParameters {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         use crate::core_crypto::prelude::*;
         ShortintParameters(crate::shortint::Parameters {
@@ -134,6 +137,7 @@ impl Shortint {
         seed_low_bytes: u64,
         parameters: &ShortintParameters,
     ) -> Result<ShortintClientKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         let seed_high_bytes: u128 = seed_high_bytes.into();
         let seed_low_bytes: u128 = seed_low_bytes.into();
@@ -154,6 +158,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn new_client_key(parameters: &ShortintParameters) -> ShortintClientKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintClientKey(crate::shortint::client_key::ClientKey::new(
@@ -163,6 +168,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn new_public_key(client_key: &ShortintClientKey) -> ShortintPublicKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintPublicKey(crate::shortint::public_key::PublicKey::new(&client_key.0))
@@ -172,6 +178,7 @@ impl Shortint {
     pub fn new_compressed_public_key(
         client_key: &ShortintClientKey,
     ) -> ShortintCompressedPublicKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCompressedPublicKey(crate::shortint::public_key::CompressedPublicKey::new(
@@ -183,6 +190,7 @@ impl Shortint {
     pub fn new_compressed_server_key(
         client_key: &ShortintClientKey,
     ) -> ShortintCompressedServerKey {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCompressedServerKey(crate::shortint::server_key::CompressedServerKey::new(
@@ -192,6 +200,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn encrypt(client_key: &ShortintClientKey, message: u64) -> ShortintCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCiphertext(client_key.0.encrypt(message))
@@ -202,6 +211,7 @@ impl Shortint {
         client_key: &ShortintClientKey,
         message: u64,
     ) -> ShortintCompressedCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCompressedCiphertext(client_key.0.encrypt_compressed(message))
@@ -211,6 +221,7 @@ impl Shortint {
     pub fn decompress_ciphertext(
         compressed_ciphertext: &ShortintCompressedCiphertext,
     ) -> ShortintCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         ShortintCiphertext(compressed_ciphertext.0.clone().into())
     }
@@ -220,6 +231,7 @@ impl Shortint {
         public_key: &ShortintPublicKey,
         message: u64,
     ) -> ShortintCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCiphertext(public_key.0.encrypt(message))
@@ -230,6 +242,7 @@ impl Shortint {
         public_key: &ShortintCompressedPublicKey,
         message: u64,
     ) -> ShortintCiphertext {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
 
         ShortintCiphertext(public_key.0.encrypt(message))
@@ -237,12 +250,14 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn decrypt(client_key: &ShortintClientKey, ct: &ShortintCiphertext) -> u64 {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         client_key.0.decrypt(&ct.0)
     }
 
     #[wasm_bindgen]
     pub fn serialize_ciphertext(ciphertext: &ShortintCiphertext) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&ciphertext.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -250,6 +265,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn deserialize_ciphertext(buffer: &[u8]) -> Result<ShortintCiphertext, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -260,6 +276,7 @@ impl Shortint {
     pub fn serialize_compressed_ciphertext(
         ciphertext: &ShortintCompressedCiphertext,
     ) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&ciphertext.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -269,6 +286,7 @@ impl Shortint {
     pub fn deserialize_compressed_ciphertext(
         buffer: &[u8],
     ) -> Result<ShortintCompressedCiphertext, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -277,6 +295,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn serialize_client_key(client_key: &ShortintClientKey) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&client_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -284,6 +303,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn deserialize_client_key(buffer: &[u8]) -> Result<ShortintClientKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -292,6 +312,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn serialize_public_key(public_key: &ShortintPublicKey) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&public_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -299,6 +320,7 @@ impl Shortint {
 
     #[wasm_bindgen]
     pub fn deserialize_public_key(buffer: &[u8]) -> Result<ShortintPublicKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -309,6 +331,7 @@ impl Shortint {
     pub fn serialize_compressed_public_key(
         public_key: &ShortintCompressedPublicKey,
     ) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&public_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -318,6 +341,7 @@ impl Shortint {
     pub fn deserialize_compressed_public_key(
         buffer: &[u8],
     ) -> Result<ShortintCompressedPublicKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -328,6 +352,7 @@ impl Shortint {
     pub fn serialize_compressed_server_key(
         server_key: &ShortintCompressedServerKey,
     ) -> Result<Vec<u8>, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::serialize(&server_key.0)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))
@@ -337,6 +362,7 @@ impl Shortint {
     pub fn deserialize_compressed_server_key(
         buffer: &[u8],
     ) -> Result<ShortintCompressedServerKey, JsError> {
+        #[cfg(feature = "console_error_panic_hook")]
         set_hook(Box::new(console_error_panic_hook::hook));
         bincode::deserialize(buffer)
             .map_err(|e| wasm_bindgen::JsError::new(format!("{e:?}").as_str()))

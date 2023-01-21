@@ -68,10 +68,7 @@ shortint-c-api = ["shortint", "__c_api"]
 __wasm_api = [
     "wasm-bindgen",
     "js-sys",
-    "console_error_panic_hook",
     "serde-wasm-bindgen",
-    "getrandom",
-    "getrandom/js",
 ]
 boolean-client-js-wasm-api = ["boolean", "__wasm_api"]
 shortint-client-js-wasm-api = ["shortint", "__wasm_api"]

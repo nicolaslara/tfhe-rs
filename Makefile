@@ -142,6 +142,13 @@ build_node_js_api: install_rs_build_toolchain
 		wasm-pack build --release --target=nodejs \
 		--features=boolean-client-js-wasm-api,shortint-client-js-wasm-api
 
+.PHONY: build_wasm_64 # Build the js API targeting nodejs
+build_wasm_64: install_rs_build_toolchain
+	cd tfhe && \
+	RUSTFLAGS="$(WASM_RUSTFLAGS)" rustup run "$(RS_BUILD_TOOLCHAIN)" \
+		wasm-pack build --release --target=bundler \
+		--features=boolean-client-js-wasm-api,shortint-client-js-wasm-api
+
 .PHONY: test_core_crypto # Run the tests of the core_crypto module
 test_core_crypto: install_rs_build_toolchain
 	RUSTFLAGS="$(RUSTFLAGS)" cargo $(CARGO_RS_BUILD_TOOLCHAIN) test --release \
