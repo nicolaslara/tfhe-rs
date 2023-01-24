@@ -68,10 +68,23 @@ shortint-c-api = ["shortint", "__c_api"]
 __wasm_api = [
     "wasm-bindgen",
     "js-sys",
+    "console_error_panic_hook",
     "serde-wasm-bindgen",
+    "getrandom",
+    "getrandom/js",
 ]
 boolean-client-js-wasm-api = ["boolean", "__wasm_api"]
 shortint-client-js-wasm-api = ["shortint", "__wasm_api"]
+
+__wasm_no_js = [
+    "wasm-bindgen",
+    "js-sys",
+    "console_error_panic_hook",
+    "serde-wasm-bindgen",
+]
+boolean-client-wasm-no-js = ["boolean", "__wasm_no_js"]
+shortint-client-wasm-no-js = ["shortint", "__wasm_no_js"]
+
 
 nightly-avx512 = ["concrete-fft/nightly"]
 

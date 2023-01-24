@@ -147,7 +147,7 @@ build_wasm_64: install_rs_build_toolchain
 	cd tfhe && \
 	RUSTFLAGS="$(WASM_RUSTFLAGS)" rustup run "$(RS_BUILD_TOOLCHAIN)" \
 		wasm-pack build --release --target=bundler \
-		--features=boolean-client-js-wasm-api,shortint-client-js-wasm-api
+		--features=boolean-client-js-wasm-no-js,shortint-client-js-wasm-no-js
 
 .PHONY: test_core_crypto # Run the tests of the core_crypto module
 test_core_crypto: install_rs_build_toolchain

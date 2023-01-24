@@ -5,7 +5,10 @@
 //! for cryptographically secure pseudo random number generators.
 
 pub use crate::core_crypto::commons::math::random::Seeder;
-#[cfg(all(target_os = "macos", not(feature = "__wasm_api")))]
+#[cfg(all(
+    target_os = "macos",
+    not(any(feature = "__wasm_api", feature = "__wasm_no_js"))
+))]
 pub use concrete_csprng::seeders::AppleSecureEnclaveSeeder;
 #[cfg(feature = "seeder_x86_64_rdseed")]
 pub use concrete_csprng::seeders::RdseedSeeder;
@@ -16,14 +19,14 @@ pub use concrete_csprng::seeders::UnixSeeder;
 mod wasm_seeder {
     use crate::core_crypto::commons::math::random::{Seed, Seeder};
     // This is used for web interfaces
-    // use getrandom::getrandom;
+    use getrandom::getrandom;
 
     pub(super) struct WasmSeeder {}
 
     impl Seeder for WasmSeeder {
         fn seed(&mut self) -> Seed {
             let mut buffer = [0u8; 16];
-            // getrandom(&mut buffer).unwrap();
+            getrandom(&mut buffer).unwrap();
 
             Seed(u128::from_le_bytes(buffer))
         }
@@ -33,6 +36,26 @@ mod wasm_seeder {
             Self: Sized,
         {
             true
+        }
+    }
+}
+
+#[cfg(feature = "__wasm_no_js")]
+mod wasm_seeder {
+    use crate::core_crypto::commons::math::random::{Seed, Seeder};
+
+    pub(super) struct WasmSeeder {}
+
+    impl Seeder for WasmSeeder {
+        fn seed(&mut self) -> Seed {
+            panic!("no randomness allowed on no-js wasm targets")
+        }
+
+        fn is_available() -> bool
+        where
+            Self: Sized,
+        {
+            false
         }
     }
 }
@@ -73,7 +96,7 @@ pub fn new_seeder() -> Box<dyn Seeder> {
 
     let err_msg;
 
-    #[cfg(not(feature = "__wasm_api"))]
+    #[cfg(not(any(feature = "__wasm_api", feature = "__wasm_no_js")))]
     {
         #[cfg(feature = "seeder_x86_64_rdseed")]
         {
@@ -110,7 +133,7 @@ pub fn new_seeder() -> Box<dyn Seeder> {
         }
     }
 
-    #[cfg(feature = "__wasm_api")]
+    #[cfg(any(feature = "__wasm_api", feature = "__wasm_no_js"))]
     {
         if seeder.is_none() && wasm_seeder::WasmSeeder::is_available() {
             seeder = Some(Box::new(wasm_seeder::WasmSeeder {}))
